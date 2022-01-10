@@ -81,6 +81,7 @@ for a in range(sheet_rangesRA.max_row - 5):
     sheet_rangesRA[columnaTotal + str(a+6)] = "=SUM(B"+str(a+6)+":"+caracterColumna+str(a+6)+")"
 sheet_rangesRA[columnaTotal + str(5)].value = "Total"
 rendimientoActual.save("C:/creaListaDerendimiento/final.xlsx")
+#Hola es una prueba x2
 
 
 
