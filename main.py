@@ -3,11 +3,22 @@ import requests
 import xlsxwriter
 import json
 import openpyxl
+from openpyxl.styles import Font
+from openpyxl.styles import Color
 
 #idTorneo es el identificador del torneo el cual debe de ser anexado a la variable url;
-idTorneo = "xKLELqoU"
-url = 'https://lichess.org/api/tournament/'+idTorneo+'/results'
-r = requests.get(url, allow_redirects=True)
+idTorneo = "1QnbUgkM"
+url = 'https://lichess.org/api/tournament/'+idTorneo
+#Esta variable obtendra los resultados del torneo
+r = requests.get(url+'/results', allow_redirects=True)
+#Esta variable obtendra la información completa del torneo
+rn = requests.get(url, allow_redirects=True)
+#Se guarda el Json para obtener el nombre
+infTor = json.loads(rn.content)
+#Obtenemos el nombre completo del torneo
+nombreTorneo = infTor['fullName']
+#Tipo de torneo, 1 para puntos normales, 2 para puntos modificados
+bonificacion = 2
 #Creamos los documentos con la información requerida para crear nuestra lista de rendimiento.
 open('C:/creaListaDerendimiento/results', 'wb').write(r.content)
 f = open('C:/creaListaDerendimiento/results', "r")
@@ -55,18 +66,14 @@ sheet_rangesRA['B4'].value = sheet_rangesRA['B4'].value + 1
 if columnaMax == 1:
     for x in range(sheet_rangesTA.max_row):
         sheet_rangesRA['A' + str(x + 6)].value = sheet_rangesTA['A' + str(x+1)].value
-        sheet_rangesRA["{}{}".format(caracterColumna, str(x + 6))].value = int(sheet_rangesTA["{}{}".format('B', str(x + 1))].value)
+        sheet_rangesRA["{}{}".format(caracterColumna, str(x + 6))].value = (int(sheet_rangesTA["{}{}".format('B', str(x + 1))].value))*bonificacion
 else:
     for n in range(sheet_rangesRA.max_row-5):
         for m in range(sheet_rangesTA.max_row):
             if sheet_rangesRA['A' + str(n + 6)].value == sheet_rangesTA['A' + str(m + 1)].value:
-                #print("Coincidencia encontrada:"+sheet_rangesRA['A' + str(n + 6)].value+"-"+sheet_rangesTA['A' + str(m + 1)].value)
                 #Para que se guarden los numeros como numeros
-                sheet_rangesRA["{}{}".format(caracterColumna, str(n+6))].value = int(sheet_rangesTA["{}{}".format('B', str(m+1))].value)
+                sheet_rangesRA["{}{}".format(caracterColumna, str(n+6))].value = (int(sheet_rangesTA["{}{}".format('B', str(m+1))].value))*bonificacion
                 break
-            #print(str(n) + "-" + str(m))
-            #if m == sheet_rangesTA.max_row-1:
-                #print("n no existe en m")
     for m in range(sheet_rangesTA.max_row):
         auxRep = 0
         for n in range(sheet_rangesRA.max_row - 5):
@@ -75,11 +82,15 @@ else:
         if auxRep >= sheet_rangesRA.max_row - 5:
             #print("n no contiene a m:" + sheet_rangesTA['A'+str(m+1)].value)
             sheet_rangesRA['A' + str(sheet_rangesRA.max_row+1)].value = sheet_rangesTA['A' + str(m + 1)].value
-            sheet_rangesRA["{}{}".format(caracterColumna, str(sheet_rangesRA.max_row))].value = int(sheet_rangesTA["{}{}".format('B', str(m + 1))].value)
+            sheet_rangesRA["{}{}".format(caracterColumna, str(sheet_rangesRA.max_row))].value = (int(sheet_rangesTA["{}{}".format('B', str(m + 1))].value))*bonificacion
 print(sheet_rangesRA.max_row - 5)
 for a in range(sheet_rangesRA.max_row - 5):
-    sheet_rangesRA[columnaTotal + str(a+6)] = "=SUM(B"+str(a+6)+":"+caracterColumna+str(a+6)+")"
+    if sheet_rangesRA['A' + str(a+6)].value != None:
+        sheet_rangesRA[columnaTotal + str(a+6)] = "=SUM(B"+str(a+6)+":"+caracterColumna+str(a+6)+")"
 sheet_rangesRA[columnaTotal + str(5)].value = "Total"
+sheet_rangesRA[caracterColumna + str(5)].value = nombreTorneo
+if bonificacion == 2:
+    sheet_rangesRA[caracterColumna + str(5)].font = Font(color="3b83bd")
 rendimientoActual.save("C:/creaListaDerendimiento/final.xlsx")
 #Hola es una prueba x3
 
