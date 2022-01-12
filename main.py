@@ -4,7 +4,6 @@ import xlsxwriter
 import json
 import openpyxl
 from openpyxl.styles import Font
-from openpyxl.styles import Color
 
 #idTorneo es el identificador del torneo el cual debe de ser anexado a la variable url;
 idTorneo = "1QnbUgkM"
@@ -50,7 +49,6 @@ rendimientoActual = openpyxl.load_workbook('C:/creaListaDerendimiento/final.xlsx
 sheet_rangesTA = torneoActual['Sheet1']
 sheet_rangesRA = rendimientoActual['Sheet1']
 #La funcion .max_row encuentra exactamente el numero de filas, si excel tiene n con esta funcion devolveremos n
-#print("Las filas maximas del documento es:"+str(sheet_rangesRA.max_row))
 #El numero de columas del documento lo obtendremos con cuantos torneos han sido contabilizados ya
 columnaMax = sheet_rangesRA['B4'].value + 1
 caracterColumna = ""+chr(columnaMax + 97)
@@ -59,7 +57,6 @@ columnaTotal = chr(columnaMax + 97 + 1)
 if columnaMax !=1:
     for a in range(sheet_rangesRA.max_row - 5):
         sheet_rangesRA[caracterColumna + str(a + 5)] = ""
-#print("El numero maximo de columas es:"+ str(columnaMax)+" En otras palabras en la letra:"+caracterColumna)
 #Al agregar un nuevo torneo este debe de ser contabilizado
 sheet_rangesRA['B4'].value = sheet_rangesRA['B4'].value + 1
 #Comenzamos a traspasar la información del nuevo torneo
@@ -80,10 +77,8 @@ else:
             if sheet_rangesRA['A' + str(n + 6)].value != sheet_rangesTA['A' + str(m + 1)].value:
                 auxRep = auxRep + 1
         if auxRep >= sheet_rangesRA.max_row - 5:
-            #print("n no contiene a m:" + sheet_rangesTA['A'+str(m+1)].value)
             sheet_rangesRA['A' + str(sheet_rangesRA.max_row+1)].value = sheet_rangesTA['A' + str(m + 1)].value
             sheet_rangesRA["{}{}".format(caracterColumna, str(sheet_rangesRA.max_row))].value = (int(sheet_rangesTA["{}{}".format('B', str(m + 1))].value))*bonificacion
-print(sheet_rangesRA.max_row - 5)
 for a in range(sheet_rangesRA.max_row - 5):
     if sheet_rangesRA['A' + str(a+6)].value != None:
         sheet_rangesRA[columnaTotal + str(a+6)] = "=SUM(B"+str(a+6)+":"+caracterColumna+str(a+6)+")"
@@ -92,7 +87,6 @@ sheet_rangesRA[caracterColumna + str(5)].value = nombreTorneo
 if bonificacion == 2:
     sheet_rangesRA[caracterColumna + str(5)].font = Font(color="3b83bd")
 rendimientoActual.save("C:/creaListaDerendimiento/final.xlsx")
-#Hola es una prueba x3
 
 
 
