@@ -1,17 +1,25 @@
 #Librerias necesarias para que funcione el programa
+import pymysql
 import requests
 import xlsxwriter
 import json
 import openpyxl
 from openpyxl.styles import Font
 
-torneos = ["Wa97aB6y","TAit8E6i","vdu5V4BE","XtcpspJM","z3IK48F1","sdQpSTjp","XqClhOsm","1QnbUgkM","D0wGoJgZ","Comu4Cf5","6YB3IJYA","pogig3Sz","iQRuqonG","q7ylg3Xg","3YlLwiJ1","txpWWEbk","xK88mTaD","yi2WT2G8"]
-puntaje = [2,2,1,1,1,2,1,1,2,1,1,1,1,2,1,1,1,1]
+torneos = ["Wa97aB6y","TAit8E6i","vdu5V4BE","XtcpspJM","z3IK48F1","sdQpSTjp","XqClhOsm","1QnbUgkM","D0wGoJgZ","Comu4Cf5"
+    ,"6YB3IJYA","pogig3Sz","iQRuqonG","q7ylg3Xg","3YlLwiJ1","txpWWEbk","xK88mTaD","yi2WT2G8","nEQiO561","H1r2oM9D",
+           "T5GtwSSO","3O5Hc6Th","E2NV9u8U","TgEAUd74","DViZw6L0","fRB8siM8","xi6tAeZA","NDuUpoEv","PpQunOUN","qMOqQIgt"
+    ,"cmKSAUlq","J4vBp8yB","q3gpRnru","hLEQPWWL","L15PgEDn","ncsWsFR3", "9n0S0ypx","9NY0XsWv","exsh2wFW","11OrrGLi"
+    ,"8fPDiXem","SoUykMkj","bma4qtWJ","iaMp7t44","7eSsU6HS","SVjouQxF","xYBlxUZm","0EyU1nYj","PrgJ0eX2","YAXVKyt0",
+           "SPgxQbn6","jMu5vmSm","OJB7IYZT","7FvjcWJu","AQqY1xnW","VyGJeaUd","9vqYaE9D","V6CerUxd","YxqISoRL","WentoYkI","YAl9gf3B"
+           "qK5DbABX"]
+tpTorneo = [2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
+            1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 for contador in  range(len(torneos)):
     #idTorneo es el identificador del torneo el cual debe de ser anexado a la variable url;
     idTorneo = torneos[contador]
     # Tipo de torneo, 1 para puntos normales, 2 para puntos modificados
-    bonificacion = puntaje[contador]
+    bonificacion = tpTorneo[contador]
     url = 'https://lichess.org/api/tournament/'+idTorneo
     #Esta variable obtendra los resultados del torneo
     r = requests.get(url+'/results', allow_redirects=True)
